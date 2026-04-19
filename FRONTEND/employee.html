@@ -2,35 +2,30 @@
 <html>
 <head>
 <title>ECAP Employee</title>
-<style></style>
-<link rel="stylesheet" href="style.css">
-<script>
 
-// 🔒 Protect page (no alert, clean redirect)
+<link rel="stylesheet" href="style.css">
+
+<script>
+// 🔒 Protect page
 if(localStorage.getItem("role") !== "employee"){
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 }
 
-// 🔓 Logout function
+// 🔓 Logout
 function logout(){
     if(confirm("Are you sure you want to logout?")){
         localStorage.clear();
-        window.location.href = "login.html";
+        window.location.href = "index.html";
     }
 }
-
 </script>
 </head>
 
 <body>
 
 <div class="header">
-    <h2>📘 ECAP -  Attendance</h2>
-   <button onclick="logout()" class="logout-btn">Logout</button>
-    </div>
-</div>
-    </div>
-</div>
+    <h2>📘 ECAP - Attendance</h2>
+    <button onclick="logout()" class="logout-btn">Logout</button>
 </div>
 
 <div class="card">
@@ -49,7 +44,7 @@ function logout(){
 <option value="BEFA">BEFA</option>
 <option value="SE">SE</option>
 <option value="DBMS">DBMS</option>
-<option value="NODEJS">NodeJS Lab</option>
+<option value="NODEJS">NODEJS</option>
 </select>
 
 <div class="radio-group">
@@ -93,7 +88,8 @@ function loadStudents() {
         return;
     }
 
-    fetch(`https://ecap-de9j.onrender.com/login/employee`)
+    // ✅ FIXED API
+    fetch(`https://ecap-de9j.onrender.com/students?section=${section}`)
     .then(res => res.json())
     .then(data => {
 
@@ -123,7 +119,6 @@ function loadStudents() {
             `;
 
             for (let i=1; i<=periods; i++) {
-
                 let checked = (mode === "Present") ? "checked" : "";
 
                 row += `
@@ -137,6 +132,10 @@ function loadStudents() {
         });
 
         document.getElementById("tbody").innerHTML = body;
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error loading students");
     });
 }
 
@@ -165,17 +164,19 @@ function submitAttendance() {
         }
     });
 
-    fetch("http://localhost:3000/attendance", {
+    // ✅ FIXED API
+    fetch("https://ecap-de9j.onrender.com/attendance", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({attendance})
     })
     .then(res=>res.json())
     .then(data=>{
-
-        let today = new Date().toLocaleDateString();
-
-        window.location.href = `success.html?date=${today}&section=${section}&subject=${subject}`;
+        alert("Attendance Saved Successfully ✅");
+    })
+    .catch(err=>{
+        console.error(err);
+        alert("Error saving attendance");
     });
 }
 
