@@ -1,3 +1,4 @@
+console.log("Using Railway DB...");
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
