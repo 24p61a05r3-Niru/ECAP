@@ -8,7 +8,14 @@ const app = express();
    MIDDLEWARE
 ========================= */
 app.use(cors());
-app.use(express.json()); // ✅ modern JSON parser
+app.use(express.json());
+
+/* =========================
+   TEST ROUTE
+========================= */
+app.get("/", (req, res) => {
+    res.send("ECAP Backend Running 🚀");
+});
 
 /* =========================
    EMPLOYEE LOGIN
@@ -20,7 +27,7 @@ app.post("/login/employee", (req, res) => {
 
     db.query(sql, [username, password], (err, result) => {
         if (err) {
-            console.log(err);
+            console.log("Employee Login Error:", err);
             return res.json({ success: false });
         }
 
@@ -38,7 +45,7 @@ app.post("/login/student", (req, res) => {
 
     db.query(sql, [roll_no, password], (err, result) => {
         if (err) {
-            console.log(err);
+            console.log("Student Login Error:", err);
             return res.json({ success: false });
         }
 
@@ -56,7 +63,7 @@ app.get("/students", (req, res) => {
 
     db.query(sql, [section], (err, result) => {
         if (err) {
-            console.log(err);
+            console.log("Fetch Students Error:", err);
             return res.json({ success: false });
         }
 
@@ -86,7 +93,7 @@ app.post("/attendance", (req, res) => {
         r.roll_no,
         r.section,
         r.subject,
-        new Date(),
+        new Date().toISOString().slice(0,10), // ✅ FIXED DATE FORMAT
         r.period,
         r.status,
         r.topic
@@ -94,7 +101,7 @@ app.post("/attendance", (req, res) => {
 
     db.query(sql, [values], (err) => {
         if (err) {
-            console.log(err);
+            console.log("Attendance Save Error:", err);
             return res.json({ success: false });
         }
         res.json({ success: true });
@@ -117,7 +124,7 @@ app.get("/student-attendance", (req, res) => {
 
     db.query(sql, [roll_no], (err, result) => {
         if (err) {
-            console.log(err);
+            console.log("Attendance Summary Error:", err);
             return res.json({ total: 0, present: 0, percent: 0 });
         }
 
@@ -146,7 +153,7 @@ app.get("/student-details", (req, res) => {
 
     db.query(sql, [roll_no], (err, result) => {
         if (err) {
-            console.log(err);
+            console.log("Subject Details Error:", err);
             return res.json({ subjects: [] });
         }
 
@@ -159,13 +166,6 @@ app.get("/student-details", (req, res) => {
 
         res.json({ subjects });
     });
-});
-
-/* =========================
-   TEST ROUTE
-========================= */
-app.get("/", (req, res) => {
-    res.send("ECAP Backend Running 🚀");
 });
 
 /* =========================
