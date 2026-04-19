@@ -85,7 +85,7 @@ function empLogin() {
     const username = empUser.value;
     const password = empPass.value;
 
-    fetch("https://ecap-de9j.onrender.com"), {
+    fetch("https://ecap-de9j.onrender.com/login/employee"), {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ username, password })
@@ -103,7 +103,7 @@ function stuLogin() {
     const roll_no = stuUser.value;
     const password = stuPass.value;
 
-    fetch('https://ecap-de9j.onrender.com'), {
+    fetch('https://ecap-de9j.onrender.com/login/student'), {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ roll_no, password })
