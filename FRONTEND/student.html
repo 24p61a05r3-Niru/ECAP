@@ -48,7 +48,7 @@ const roll_no = localStorage.getItem("roll_no");
 document.getElementById("studentInfo").innerText = "Roll No: " + roll_no;
 
 // Fetch attendance
-fetch(`http://localhost:3000/student-details?roll_no=${roll_no}`)
+fetch('https://ecap-de9j.onrender.com')
 .then(res => res.json())
 .then(data => {
 

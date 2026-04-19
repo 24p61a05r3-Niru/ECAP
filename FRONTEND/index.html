@@ -85,11 +85,11 @@ function empLogin() {
     const username = empUser.value;
     const password = empPass.value;
 
-    fetch("http://localhost:3000/login/employee", {
+    fetch("https://ecap-de9j.onrender.com"), {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ username, password })
-    })
+    }
     .then(res => res.json())
     .then(data => {
         if(data.success){
@@ -103,11 +103,11 @@ function stuLogin() {
     const roll_no = stuUser.value;
     const password = stuPass.value;
 
-    fetch("http://localhost:3000/login/student", {
+    fetch('https://ecap-de9j.onrender.com'), {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ roll_no, password })
-    })
+    }
     .then(res => res.json())
     .then(data => {
         if(data.success){
