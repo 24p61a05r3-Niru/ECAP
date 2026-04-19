@@ -11,7 +11,6 @@
 
 <div class="card">
 
-    <!-- ✅ LOGO -->
     <img src="Colstulogo.png" class="logo">
 
     <h2>Student Attendance Dashboard</h2>
@@ -38,8 +37,8 @@
 <script>
 
 // 🔒 PROTECT PAGE
-if(localStorage.getItem("role") !== "student"){
-    window.location.href = "login.html";
+if (localStorage.getItem("role") !== "student") {
+    window.location.href = "index.html";
 }
 
 const roll_no = localStorage.getItem("roll_no");
@@ -47,14 +46,14 @@ const roll_no = localStorage.getItem("roll_no");
 // Show roll number
 document.getElementById("studentInfo").innerText = "Roll No: " + roll_no;
 
-// Fetch attendance
-fetch("https://ecap-de9j.onrender.com/login/student")
+// ✅ CORRECT API CALL
+fetch(`https://ecap-de9j.onrender.com/student-details?roll_no=${roll_no}`)
 .then(res => res.json())
 .then(data => {
 
     let body = "";
 
-    if(data.subjects.length === 0){
+    if (!data.subjects || data.subjects.length === 0) {
         body = "<tr><td colspan='4'>No Attendance Data</td></tr>";
     } else {
         data.subjects.forEach(s => {
@@ -69,11 +68,17 @@ fetch("https://ecap-de9j.onrender.com/login/student")
     }
 
     document.getElementById("tableBody").innerHTML = body;
+})
+.catch(err => {
+    console.error(err);
+    document.getElementById("tableBody").innerHTML =
+        "<tr><td colspan='4'>Error loading data</td></tr>";
 });
 
-function logout(){
+// Logout
+function logout() {
     localStorage.clear();
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 }
 
 </script>

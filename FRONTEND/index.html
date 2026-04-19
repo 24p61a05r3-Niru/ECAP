@@ -1,4 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ECAP Login</title>
+
+<link rel="stylesheet" href="login.css">
+
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    text-align: center;
+    color: white;
+}
+
+h1 {
+    margin-top: 30px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 80px;
+}
+
+.card {
+    background: white;
+    color: black;
+    padding: 25px;
+    border-radius: 12px;
+    width: 280px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.card img {
+    width: 80px;
+    margin-bottom: 10px;
+}
+
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px;
+}
+
+button {
+    padding: 10px;
+    width: 100%;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #3730a3;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>🎓 ECAP Attendance System</h1>
+
+<div class="container">
+
+<!-- EMPLOYEE -->
+<div class="card">
+    <img src="FacLogo.jpg">
+    <h3>Faculty Login</h3>
+    <input id="empUser" placeholder="Username">
+    <input id="empPass" type="password" placeholder="Password">
+    <button onclick="empLogin()">Login</button>
+</div>
+
+<!-- STUDENT -->
+<div class="card">
+    <img src="Colstulogo.png">
+    <h3>Student Login</h3>
+    <input id="stuUser" placeholder="Roll No">
+    <input id="stuPass" type="password" placeholder="Password">
+    <button onclick="stuLogin()">Login</button>
+</div>
+
+</div>
+
 <script>
+
+// 🔹 EMPLOYEE LOGIN
 function empLogin() {
     const username = document.getElementById("empUser").value;
     const password = document.getElementById("empPass").value;
@@ -19,10 +109,11 @@ function empLogin() {
     })
     .catch(err => {
         console.error(err);
-        alert("Server error");
+        alert("Server Error");
     });
 }
 
+// 🔹 STUDENT LOGIN
 function stuLogin() {
     const roll_no = document.getElementById("stuUser").value;
     const password = document.getElementById("stuPass").value;
@@ -44,7 +135,11 @@ function stuLogin() {
     })
     .catch(err => {
         console.error(err);
-        alert("Server error");
+        alert("Server Error");
     });
 }
+
 </script>
+
+</body>
+</html>
