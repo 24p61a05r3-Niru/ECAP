@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Success</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(to right, #dbeafe, #f0f9ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.card {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+h2 {
+    color: green;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+    <h2>✅ Attendance Uploaded Successfully</h2>
+
+    <p id="date"></p>
+    <p id="section"></p>
+    <p id="subject"></p>
+
+    <button onclick="goBack()">Back</button>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+document.getElementById("date").innerText = "Date: " + params.get("date");
+document.getElementById("section").innerText = "Section:CSE- " + params.get("section");
+document.getElementById("subject").innerText = "Subject: " + params.get("subject");
+
+function goBack() {
+    window.location.href = "employee.html";
+}
+</script>
+
+</body>
+</html>

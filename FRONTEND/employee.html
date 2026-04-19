@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ECAP Employee</title>
+<style></style>
+<link rel="stylesheet" href="style.css">
+<script>
+
+// 🔒 Protect page (no alert, clean redirect)
+if(localStorage.getItem("role") !== "employee"){
+    window.location.href = "login.html";
+}
+
+// 🔓 Logout function
+function logout(){
+    if(confirm("Are you sure you want to logout?")){
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+}
+
+</script>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>📘 ECAP -  Attendance</h2>
+   <button onclick="logout()" class="logout-btn">Logout</button>
+    </div>
+</div>
+    </div>
+</div>
+</div>
+
+<div class="card">
+
+<h3>Mark Attendance</h3>
+
+<select id="section">
+<option value="">Select Section</option>
+<option>A</option><option>B</option><option>C</option>
+<option>D</option><option>E</option><option>F</option>
+</select>
+
+<select id="subject" onchange="setPeriods()">
+<option value="">Select Subject</option>
+<option value="DM">DM</option>
+<option value="BEFA">BEFA</option>
+<option value="SE">SE</option>
+<option value="DBMS">DBMS</option>
+<option value="NODEJS">NodeJS Lab</option>
+</select>
+
+<div class="radio-group">
+    <b>Default Mode:</b>
+    <label><input type="radio" name="mode" value="Present" checked> Present</label>
+    <label><input type="radio" name="mode" value="Absent"> Absent</label>
+</div>
+
+<button onclick="loadStudents()">Load Students</button>
+
+<br>
+
+<input type="text" id="topic" placeholder="Enter Class Topic" style="width:300px">
+
+<table>
+<thead id="thead"></thead>
+<tbody id="tbody"></tbody>
+</table>
+
+<br>
+<button onclick="submitAttendance()">Submit Attendance</button>
+
+</div>
+
+<script>
+
+let periods = 2;
+let studentsData = [];
+
+function setPeriods() {
+    let subject = document.getElementById("subject").value;
+    periods = (subject === "NODEJS") ? 3 : 2;
+}
+
+function loadStudents() {
+    let section = document.getElementById("section").value;
+    let mode = document.querySelector('input[name="mode"]:checked').value;
+
+    if (!section) {
+        alert("Select section");
+        return;
+    }
+
+    fetch(`http://localhost:3000/students?section=${section}`)
+    .then(res => res.json())
+    .then(data => {
+
+        studentsData = data.students;
+
+        let head = `<tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Section</th>
+        `;
+
+        for (let i=1; i<=periods; i++) {
+            head += `<th>P${i}</th>`;
+        }
+        head += `</tr>`;
+        document.getElementById("thead").innerHTML = head;
+
+        let body = "";
+
+        studentsData.forEach(s => {
+
+            let row = `
+            <tr>
+                <td>${s.roll_no}</td>
+                <td>${s.name}</td>
+                <td>${s.section}</td>
+            `;
+
+            for (let i=1; i<=periods; i++) {
+
+                let checked = (mode === "Present") ? "checked" : "";
+
+                row += `
+                <td>
+                    <input type="checkbox" id="att_${s.id}_${i}" ${checked}>
+                </td>`;
+            }
+
+            row += `</tr>`;
+            body += row;
+        });
+
+        document.getElementById("tbody").innerHTML = body;
+    });
+}
+
+function submitAttendance() {
+
+    let section = document.getElementById("section").value;
+    let subject = document.getElementById("subject").value;
+    let topic = document.getElementById("topic").value;
+
+    let attendance = [];
+
+    studentsData.forEach(s => {
+        for (let i=1; i<=periods; i++) {
+
+            let checked = document.getElementById(`att_${s.id}_${i}`).checked;
+
+            attendance.push({
+                student_id: s.id,
+                roll_no: s.roll_no,
+                section,
+                subject,
+                period: i,
+                status: checked ? "Present" : "Absent",
+                topic
+            });
+        }
+    });
+
+    fetch("http://localhost:3000/attendance", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({attendance})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        let today = new Date().toLocaleDateString();
+
+        window.location.href = `success.html?date=${today}&section=${section}&subject=${subject}`;
+    });
+}
+
+</script>
+
+</body>
+</html>

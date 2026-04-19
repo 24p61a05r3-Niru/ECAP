@@ -1,0 +1,77 @@
+/* ===== BACKGROUND ===== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+/* ===== CARD ===== */
+.card {
+    background: white;
+    margin: 50px auto;
+    padding: 25px;
+    width: 80%;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+/* ===== LOGO ===== */
+.logo {
+    width: 90px;
+    display: block;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* ===== TITLE ===== */
+h2 {
+    color: #1e3a8a;
+}
+
+/* ===== STUDENT INFO ===== */
+h4 {
+    color: #4f46e5;
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+/* HEADER */
+th {
+    background: #4f46e5;
+    color: white;
+    padding: 12px;
+}
+
+/* CELLS */
+td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #f8fafc;
+}
+
+/* HOVER */
+tr:hover td {
+    background: #e0e7ff;
+}
+
+/* BUTTON */
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #b91c1c;
+}

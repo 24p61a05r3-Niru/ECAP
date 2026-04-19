@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Dashboard</title>
+
+<link rel="stylesheet" href="student.css">
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <!-- ✅ LOGO -->
+    <img src="Colstulogo.png" class="logo">
+
+    <h2>Student Attendance Dashboard</h2>
+
+    <h4 id="studentInfo"></h4>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Total Classes</th>
+                <th>Present</th>
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <br>
+    <button onclick="logout()">Logout</button>
+
+</div>
+
+<script>
+
+// 🔒 PROTECT PAGE
+if(localStorage.getItem("role") !== "student"){
+    window.location.href = "login.html";
+}
+
+const roll_no = localStorage.getItem("roll_no");
+
+// Show roll number
+document.getElementById("studentInfo").innerText = "Roll No: " + roll_no;
+
+// Fetch attendance
+fetch(`http://localhost:3000/student-details?roll_no=${roll_no}`)
+.then(res => res.json())
+.then(data => {
+
+    let body = "";
+
+    if(data.subjects.length === 0){
+        body = "<tr><td colspan='4'>No Attendance Data</td></tr>";
+    } else {
+        data.subjects.forEach(s => {
+            body += `
+            <tr>
+                <td>${s.subject}</td>
+                <td>${s.total}</td>
+                <td>${s.present}</td>
+                <td>${s.percent}%</td>
+            </tr>`;
+        });
+    }
+
+    document.getElementById("tableBody").innerHTML = body;
+});
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+</script>
+
+</body>
+</html>
