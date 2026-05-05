@@ -2,6 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const db = require("./db");
 
+const PDFDocument = require("pdfkit");
+const nodemailer = require("nodemailer");
+
+require("dotenv").config();
+
 const app = express();
 
 /* =========================
@@ -93,7 +98,7 @@ app.post("/attendance", (req, res) => {
         r.roll_no,
         r.section,
         r.subject,
-        new Date().toISOString().slice(0,10), // ✅ FIXED DATE FORMAT
+        new Date().toISOString().slice(0,10),
         r.period,
         r.status,
         r.topic
@@ -166,6 +171,84 @@ app.get("/student-details", (req, res) => {
 
         res.json({ subjects });
     });
+});
+
+/* =========================
+   DOWNLOAD ATTENDANCE PDF
+========================= */
+app.get("/download-attendance", (req, res) => {
+
+    const { section, date } = req.query;
+
+    const sql = `
+        SELECT roll_no, subject, period, status, topic
+        FROM attendance
+        WHERE section=? AND date=?
+    `;
+
+    db.query(sql, [section, date], (err, results) => {
+        if (err) {
+            console.log("PDF Error:", err);
+            return res.status(500).send("Error generating PDF");
+        }
+
+        const doc = new PDFDocument();
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "attachment; filename=attendance.pdf");
+
+        doc.pipe(res);
+
+        doc.fontSize(18).text("Daily Attendance Report", { align: "center" });
+        doc.moveDown();
+
+        doc.text(`Section: ${section}`);
+        doc.text(`Date: ${date}`);
+        doc.moveDown();
+
+        results.forEach((r, i) => {
+            doc.text(`${i + 1}. ${r.roll_no} | ${r.subject} | P${r.period} | ${r.status} | ${r.topic}`);
+        });
+
+        doc.end();
+    });
+});
+
+/* =========================
+   SEND ATTENDANCE EMAIL
+========================= */
+app.post("/send-attendance-mail", async (req, res) => {
+
+    const { email, section, date } = req.body;
+
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASS
+        }
+    });
+
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL,
+            to: email,
+            subject: "Daily Attendance Report",
+            text: `Attendance report for Section ${section} on ${date}`,
+            attachments: [
+                {
+                    filename: "attendance.pdf",
+                    path: `${process.env.BASE_URL}/download-attendance?section=${section}&date=${date}`
+                }
+            ]
+        });
+
+        res.json({ success: true });
+
+    } catch (err) {
+        console.log("Mail Error:", err);
+        res.json({ success: false });
+    }
 });
 
 /* =========================
