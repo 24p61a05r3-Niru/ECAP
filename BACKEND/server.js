@@ -264,7 +264,15 @@ app.post("/send-attendance-mail", async (req, res) => {
    SERVER START
 ========================= */
 const PORT = process.env.PORT || 3000;
-
+app.get("/test-db", (req, res) => {
+    db.query("SELECT 1", (err, result) => {
+        if (err) {
+            console.log("DB ERROR:", err);
+            return res.send("DB ERROR");
+        }
+        res.send("DB WORKING");
+    });
+});
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
