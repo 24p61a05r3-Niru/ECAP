@@ -180,6 +180,8 @@ app.get("/download-attendance", (req, res) => {
 
     const { section, date } = req.query;
 
+    console.log("PDF Request:", section, date);
+
     const sql = `
         SELECT roll_no, subject, period, status, topic
         FROM attendance
@@ -187,11 +189,15 @@ app.get("/download-attendance", (req, res) => {
     `;
 
     db.query(sql, [section, date], (err, results) => {
+
         if (err) {
-            console.log("PDF Error:", err);
-            return res.status(500).send("Error generating PDF");
+            console.log("DB ERROR:", err);
+            return res.status(500).send("Database error");
         }
 
+        console.log("Query results:", results);
+
+        const PDFDocument = require("pdfkit");
         const doc = new PDFDocument();
 
         res.setHeader("Content-Type", "application/pdf");
@@ -206,14 +212,17 @@ app.get("/download-attendance", (req, res) => {
         doc.text(`Date: ${date}`);
         doc.moveDown();
 
-        results.forEach((r, i) => {
-            doc.text(`${i + 1}. ${r.roll_no} | ${r.subject} | P${r.period} | ${r.status} | ${r.topic}`);
-        });
+        if (!results || results.length === 0) {
+            doc.text("No attendance records found for this date.");
+        } else {
+            results.forEach((r, i) => {
+                doc.text(`${i + 1}. ${r.roll_no} | ${r.subject} | P${r.period} | ${r.status}`);
+            });
+        }
 
         doc.end();
     });
 });
-
 /* =========================
    SEND ATTENDANCE EMAIL
 ========================= */
