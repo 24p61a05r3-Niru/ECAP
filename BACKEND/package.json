@@ -1,0 +1,17 @@
+{
+  "name": "ecap-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "mysql2": "^3.22.1",
+    "pdfkit": "^0.15.0",
+    "nodemailer": "^6.9.0",
+    "dotenv": "^16.0.0"
+  }
+}
